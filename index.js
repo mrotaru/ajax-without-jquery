@@ -1,12 +1,12 @@
 var ajax = function(options){
     var options = options || {};
-    var method = optins.method  || 'GET';
-    var sync   = optins.sync    || false;
+    var method = options.method  || 'GET';
+    var sync   = options.sync    || false;
     var url    = options.url    || window.location.pathname;
     var done   = options.done   || function(){};
     var fail   = options.fail   || function(){};
     var data   = options.data   || null;
-    var type   = options.type   || 'json';
+    var type   = options.type   || 'uri';
 
     try {
         xhr = new XMLHttpRequest();
