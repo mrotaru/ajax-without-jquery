@@ -1,63 +1,52 @@
-// ajax without jquery; from: http://stackoverflow.com/a/18078705/447661
-var ajax = {};
-ajax.x = function() {
-    if (typeof XMLHttpRequest !== 'undefined') {
-        return new XMLHttpRequest();  
-    }
-    var versions = [
-        "MSXML2.XmlHttp.5.0",   
-        "MSXML2.XmlHttp.4.0",  
-        "MSXML2.XmlHttp.3.0",   
-        "MSXML2.XmlHttp.2.0",  
-        "Microsoft.XmlHttp"
-    ];
+var ajax = function(options){
+    var options = options || {};
+    var method = optins.method  || 'GET';
+    var sync   = optins.sync    || false;
+    var url    = options.url    || window.location.pathname;
+    var done   = options.done   || function(){};
+    var fail   = options.fail   || function(){};
+    var data   = options.data   || null;
+    var type   = options.type   || 'json';
 
-    var xhr;
-    for(var i = 0; i < versions.length; i++) {  
-        try {  
-            xhr = new ActiveXObject(versions[i]);  
-            break;  
-        } catch (e) {
-        }  
+    try {
+        xhr = new XMLHttpRequest();
+    } catch ( e ) {
+        return fail(e);
     }
-    return xhr;
-};
 
-ajax.send = function(url, callback, method, data, sync) {
-    var x = ajax.x();
-    x.open(method, url, sync);
-    x.onreadystatechange = function() {
-        if (x.readyState == 4) {
-            callback(x.responseText,x)
+    xhr.open(method, url, sync);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState == 4) {
+            done(xhr);
         }
     };
-    if (method == 'POST') {
-        x.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-    };
+
+    var query = '?';
+    if (type === 'json') {
+        data = JSON.stringify(data);
+        xhr.setRequestHeader('Content-type', 'application/json');
+    } else if (type === 'uri') {
+        for (var key in data) {
+            query += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+        }
+    } else {
+        fail('Type not supported: ' + type);
+    }
+
     try {
-        x.send(data);
+        if (method === 'POST' && type === 'json') {
+            xhr.send(url, done, 'POST', data, sync);
+        } else if (method === 'POST' && type === 'uri') {
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+            xhr.send(url, done, 'POST', data, sync);
+        } else if (method === 'GET') {
+            xhr.send(url + query, done, 'GET', null, sync);
+        } else {
+            fail('Type not supported: ' + type);
+        }
     } catch(err) {
-        callback(err);
+        fail(err);
     };
-};
+}
 
-ajax.get = function(url, data, callback, sync) {
-    var query = [];
-    for (var key in data) {
-        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-    }
-    ajax.send(url + '?' + query.join('&'), callback, 'GET', null, sync)
-};
-
-ajax.post = function(url, data, callback, sync) {
-    var query = [];
-    for (var key in data) {
-        query.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-    }
-    ajax.send(url, callback, 'POST', query.join('&'), sync)
-};
-
-ajax.postJson = function(url, data, callback, sync) {
-    var _data = JSON.stringify(data);
-    ajax.send(url, callback, 'POST', _data, sync)
-};
+window.ajax = ajax;
