@@ -6,7 +6,7 @@ var ajax = function(options){
     var done   = options.done   || function(){};
     var fail   = options.fail   || function(){};
     var data   = options.data   || null;
-    var type   = options.type   || 'uri';
+    var type   = options.type   || 'json';
 
     try {
         xhr = new XMLHttpRequest();
@@ -38,6 +38,7 @@ var ajax = function(options){
     }
 
     try {
+        console.log(data);
         xhr.send(method === 'GEt' ? null : data);
     } catch(err) {
         return fail(err);

@@ -19,9 +19,11 @@ app.get('/get/json', function(req,res){
 
 app.post('/post/json', function(req,res){
   console.log(req.body);
+  res.end();
 });
 
 app.post('/post/uri', function(req,res){
   console.log(req.body);
+  res.end();
 });
 app.listen(80);
