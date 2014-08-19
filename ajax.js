@@ -1,7 +1,7 @@
 var ajax = function(options){
     var options = options || {};
-    var method = options.method  || 'GET';
-    var sync   = options.sync    || false;
+    var method = options.method || 'GET';
+    var sync   = options.sync   || false;
     var url    = options.url    || window.location.pathname;
     var done   = options.done   || function(){};
     var fail   = options.fail   || function(){};
@@ -17,36 +17,31 @@ var ajax = function(options){
     xhr.open(method, url, sync);
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
-            done(xhr);
+            return done(xhr);
         }
     };
 
-    var query = '?';
     if (type === 'json') {
         data = JSON.stringify(data);
-        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
     } else if (type === 'uri') {
+        if (method === 'POST') {
+            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+        }
+        var query = '';
         for (var key in data) {
             query += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
         }
+        data = query;
     } else {
-        fail('Type not supported: ' + type);
+        return fail('Type not supported: ' + type);
     }
 
     try {
-        if (method === 'POST' && type === 'json') {
-            xhr.send(url, done, 'POST', data, sync);
-        } else if (method === 'POST' && type === 'uri') {
-            xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-            xhr.send(url, done, 'POST', data, sync);
-        } else if (method === 'GET') {
-            xhr.send(url, done, 'GET', null, sync);
-        } else {
-            fail('Type not supported: ' + type);
-        }
+        xhr.send(method === 'GEt' ? null : data);
     } catch(err) {
-        fail(err);
-    };
+        return fail(err);
+    }
 }
 
 window.ajax = ajax;
