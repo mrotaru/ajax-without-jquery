@@ -40,7 +40,7 @@ var ajax = function(options){
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
             xhr.send(url, done, 'POST', data, sync);
         } else if (method === 'GET') {
-            xhr.send(url + query, done, 'GET', null, sync);
+            xhr.send(url, done, 'GET', null, sync);
         } else {
             fail('Type not supported: ' + type);
         }
