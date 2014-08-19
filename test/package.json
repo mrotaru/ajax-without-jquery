@@ -1,0 +1,11 @@
+{
+  "name": "ExpressApp",
+  "version": "0.0.1",
+  "description": "A Node.js App using express",
+  "dependencies": {
+	  "express": "*",
+	  "jade": "*",
+	  "body-parser": "~1.0.1"
+   },
+  "engine": "node >=0.6.x"
+}
