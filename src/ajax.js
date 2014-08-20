@@ -25,6 +25,14 @@ var ajax = function(options){
         }
     };
 
+    function objectToQueryString(data){
+        var query = '';
+        for (var key in data) {
+            query += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
+        }
+        return query;
+    }
+
     if (type === 'json') {
         data = JSON.stringify(data);
         xhr.setRequestHeader('Content-type', 'application/json;charset=UTF-8');
@@ -32,18 +40,14 @@ var ajax = function(options){
         if (method === 'POST') {
             xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
         }
-        var query = '';
-        for (var key in data) {
-            query += encodeURIComponent(key) + '=' + encodeURIComponent(data[key]);
-        }
-        data = query;
+        data = objectToQueryString(data);
     } else {
         return fail('Type not supported: ' + type);
     }
 
     try {
         console.log(data);
-        xhr.send(method === 'GEt' ? null : data);
+        xhr.send(method === 'GET' ? null : data);
     } catch(err) {
         return fail(err);
     }
