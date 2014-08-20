@@ -18,7 +18,15 @@ var ajax = function(options){
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
             if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
-                return done(xhr);
+                if(type === 'json' && method === 'GET') {
+                    try {
+                        return done(JSON.parse(xhr.responseText));
+                    } catch (err) {
+                        return fail(err);
+                    }
+                } else {
+                    return done(xhr);
+                }
             } else {
                 return fail('http return code: ' + xhr.status);
             }
@@ -46,7 +54,6 @@ var ajax = function(options){
     }
 
     try {
-        console.log(data);
         xhr.send(method === 'GET' ? null : data);
     } catch(err) {
         return fail(err);

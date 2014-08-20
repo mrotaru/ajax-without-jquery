@@ -19,6 +19,14 @@ window.onload = function(){
         });
     };
 
+    document.getElementById('button-get-404').onclick = function(event){
+        ajax({
+            url: '/get/json-404',
+            done: done,
+            fail: fail
+        });
+    }
+
     document.getElementById('button-post-json').onclick = function(event){
         ajax({
             url: '/post/json',

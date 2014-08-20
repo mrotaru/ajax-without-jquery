@@ -14,7 +14,7 @@ app.get('/', function(req, res){
 
 app.get('/get/json', function(req,res){
   res.setHeader('Content-Type', 'application/json');
-  res.end(JSON.stringify({ a: 1 }));
+  res.end(JSON.stringify({ foo: 'bar' }));
 });
 
 app.post('/post/json', function(req,res){
