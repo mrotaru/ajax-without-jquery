@@ -17,7 +17,11 @@ var ajax = function(options){
     xhr.open(method, url, sync);
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4) {
-            return done(xhr);
+            if ((xhr.status >= 200 && xhr.status < 300) || xhr.status == 304) {
+                return done(xhr);
+            } else {
+                return fail('http return code: ' + xhr.status);
+            }
         }
     };
 
