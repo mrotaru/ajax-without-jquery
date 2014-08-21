@@ -10,12 +10,23 @@ window.onload = function(){
         console.log(err);
     }
 
+    function complete(xhr, status){
+        console.log('complete');
+        console.log(xhr);
+    }
+
+    function beforeSend(xhr){
+        console.log('beforeSend');
+    }
+
     document.getElementById('button-get').onclick = function(event){
         ajax({
             url: '/get/json',
             method: 'GET',
             done: done,
-            fail: fail
+            fail: fail,
+            beforeSend: beforeSend,
+            complete: complete
         });
     };
 
